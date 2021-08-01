@@ -7,6 +7,7 @@ Created on Mon Jun 28 14:20:36 2021
 import numpy as np
 from numpy.linalg import inv
 from scipy.stats import unitary_group
+from scipy import linalg
 import matplotlib.pyplot as plt
 import time
 from fit_RB import compare_Fm
@@ -15,25 +16,26 @@ class noise_model():
     def __init__(self, noise_mode, noise_para):
         self.mode = noise_mode
         self.para = noise_para
+        
     def apply_noise(self, state):
         if self.mode == 'depolar':
-            model = self.depolarizing_noise(state)
+            model = self._depolarizing_noise(state)
             # tmp_rho = self.depolarizing_noise_v2()
         elif self.mode == 'p_flip':
-            model = self.phase_flip(state)
+            model = self._phase_flip(state)
         elif self.mode == 'amp_damp':
-            model = self.amplitude_damping(state)
+            model = self._amplitude_damping(state)
         # elif noise_mode == 'b_flip':
             # tmp_rho = b_flip()
         return model
         
-    def depolarizing_noise(self, rho):
+    def _depolarizing_noise(self, rho):
         # noise channel should be the same as sum over Kraus.
         # noise_para range from 0~1.5, depolarizing channel.
         noisy_rho = (1-self.para)*rho + (self.para/2)*np.eye(2)
         return noisy_rho
     
-    def depolarizing_noise_v2(self, rho):
+    def _depolarizing_noise_v2(self, rho):
         # noise channel should be the same as sum over Kraus.
         lm = 0.1  # range from 0~1.5, depolarizing channel.
         noisy_rho = 1j*np.zeros((2,2))
@@ -48,7 +50,7 @@ class noise_model():
             # print(noisy_rho)
         return noisy_rho
     
-    def phase_flip(self, rho):
+    def _phase_flip(self, rho):
         # noise channel should be the same as sum over Kraus.
         noisy_rho = 1j*np.zeros((2,2))
         ket_0 = np.array([1,0]).reshape(2,1)
@@ -62,7 +64,7 @@ class noise_model():
             noisy_rho += K[i] @ rho @ np.conj(K[i]).T
         return noisy_rho
     
-    def amplitude_damping(self, rho):
+    def _amplitude_damping(self, rho):
         # noise channel should be the same as sum over Kraus.
         noisy_rho = 1j*np.zeros((2,2))
         K = np.zeros((2,2,2)) + 1j*np.zeros((2,2,2))
@@ -104,7 +106,7 @@ if __name__ == "__main__":
     # rho = np.array([[1,1],[1,1]])/2 + 1j*np.zeros((2,2))
     proj_O = np.kron(ket_0, ket_0.T)        # np.kron(ket_0, ket_0.T) - np.kron(ket_1, ket_1.T)
 
-    M = 100
+    M = 200
     sample_size = int(1e1)
     fm = np.zeros(sample_size)
     Fm = np.zeros(M)

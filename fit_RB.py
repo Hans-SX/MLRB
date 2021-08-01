@@ -45,7 +45,8 @@ def compare_Fm(Fm, proj_O, rho, noise_mode, noise_para, pic_path):
     A = np.trace(proj_O @ (rho-np.eye(2)/2)).real
     B = np.trace(proj_O @ (np.eye(2)/2)).real
     
-    
+    # Not exactly, should write a function to calculate tr(Lambda)
+    # The trace of a map (represented by Kraus operators) should be take care of, not a matrix.
     if noise_mode == 'depolar':
         theory_p = (4 - 3*noise_para -1)/3
     elif noise_mode == 'amp_damp':

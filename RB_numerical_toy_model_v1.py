@@ -92,7 +92,7 @@ def sequence_with_noise(m, rho, noise_mode, noise_para):
 
 if __name__ == "__main__":
     
-    noise_mode = 'amp_damp'
+    noise_mode = 'p_flip'
     noise_para = 0.999
     
     seed = 1
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # rho = np.array([[1,1],[1,1]])/2 + 1j*np.zeros((2,2))
     proj_O = np.kron(ket_0, ket_0.T)        # np.kron(ket_0, ket_0.T) - np.kron(ket_1, ket_1.T)
 
-    M = 200
+    M = 40
     sample_size = int(1e1)
     fm = np.zeros(sample_size)
     Fm = np.zeros(M)

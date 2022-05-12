@@ -36,7 +36,7 @@ lm = 0.05  # must be the same as data lm
 # Fm = np.loadtxt("../data/Fm_80_avg_1000_depolar_005_seed_1_2021_07_01_21_45.txt")
 # Fm = np.loadtxt("../data/Fm_100_avg_10_Amp_damp_001_K1_seed_1_2021_07_06_18_46.txt")
 
-def compare_Fm(Fm, proj_O, rho, noise_mode, noise_para, pic_path):
+def plot_Fm_with_predict(Fm, proj_O, rho, noise_mode, noise_para, pic_path):
     m = np.array(range(1, 1 + len(Fm)))
     # ket_0 = np.array([1,0]).reshape(2,1)
     # ket_1 = np.array([0,1]).reshape(2,1)
@@ -45,8 +45,7 @@ def compare_Fm(Fm, proj_O, rho, noise_mode, noise_para, pic_path):
     A = np.trace(proj_O @ (rho-np.eye(2)/2)).real
     B = np.trace(proj_O @ (np.eye(2)/2)).real
     
-    # Not exactly, should write a function to calculate tr(Lambda)
-    # The trace of a map (represented by Kraus operators) should be take care of, not a matrix.
+    # theory_p from Eq.13 in arXiv:2107.05403.
     if noise_mode == 'depolar':
         theory_p = (4 - 3*noise_para -1)/3
     elif noise_mode == 'amp_damp':

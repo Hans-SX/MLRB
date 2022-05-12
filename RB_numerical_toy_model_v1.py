@@ -10,7 +10,7 @@ from scipy.stats import unitary_group
 from scipy import linalg
 import matplotlib.pyplot as plt
 import time
-from fit_RB import compare_Fm
+from fit_RB import plot_Fm_with_predict
 
 class noise_model():
     def __init__(self, noise_mode, noise_para):
@@ -19,8 +19,8 @@ class noise_model():
         
     def apply_noise(self, state):
         if self.mode == 'depolar':
-            model = self._depolarizing_noise(state)
-            # tmp_rho = self.depolarizing_noise_v2()
+            # model = self._depolarizing_noise(state)
+            model = self._depolarizing_noise_v2(state)
         elif self.mode == 'p_flip':
             model = self._phase_flip(state)
         elif self.mode == 'amp_damp':
@@ -92,8 +92,14 @@ def sequence_with_noise(m, rho, noise_mode, noise_para):
 
 if __name__ == "__main__":
     
-    noise_mode = 'p_flip'
-    noise_para = 0.999
+    noise_mode = 'depolar'
+    '''
+    I think only depolarizing noise will fit the A*P**m + B,
+    RB of Clifford operators, p19.
+    # noise_mode = 'amp_damp'
+    # noise_mode = 'p_flip'
+    '''
+    noise_para = 0.1
     
     seed = 1
     np.random.seed(seed)
@@ -106,7 +112,7 @@ if __name__ == "__main__":
     # rho = np.array([[1,1],[1,1]])/2 + 1j*np.zeros((2,2))
     proj_O = np.kron(ket_0, ket_0.T)        # np.kron(ket_0, ket_0.T) - np.kron(ket_1, ket_1.T)
 
-    M = 40
+    M = 100
     sample_size = int(1e1)
     fm = np.zeros(sample_size)
     Fm = np.zeros(M)
@@ -131,7 +137,7 @@ if __name__ == "__main__":
             # np.savetxt("../data/Fm_" + str(M) + "_avg_" + str(sample_size) + "_Amp_damp_001_K1_seed_" + str(seed) + "_" + time_mark + ".txt", Fm)
     
     pic_path = "../data/Fm_" + str(M) + "_avg_" + str(sample_size) + '_' + noise_mode +'_'+ str(noise_para) + "_seed_" + str(seed) + "_" + time_mark + ".png"
-    compare_Fm(Fm, proj_O, rho, noise_mode, noise_para, pic_path)
+    plot_Fm_with_predict(Fm, proj_O, rho, noise_mode, noise_para, pic_path)
     # plt.plot(range(1, M+1), Fm, 'o')
     # plt.title(noise_mode)
     # plt.xlabel('Sequence length')
